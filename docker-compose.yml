@@ -6,32 +6,29 @@ services:
     build: ./result
     ports:
       - "5858:80"
-    networks:
-      - front-tier
-      - back-tier
+    depends_on:
+      - redis
+      - db
 
   vote:
     build: ./vote
     ports:
       - "5000:80"
-    networks:
-      - front-tier
-      - back-tier
+    depends_on:
+      - redis
+      - db
 
   worker:
-    build:
-      context: ./worker
-      dockerfile: Dockerfile
-    networks:
-      - back-tier
+    build: ./worker
+    depends_on:
+      - redis
+      - db
 
   redis:
     image: redis:alpine
     container_name: redis
     ports:
       - "6379"
-    networks:
-      - back-tier
   
   db:
     image: postgres:9.4
@@ -41,12 +38,6 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-    networks: 
-      - back-tier
 
 volumes:
   db-data: {}
-
-networks:
-  front-tier: {}
-  back-tier: {}
