@@ -18,6 +18,14 @@ services:
       - redis
       - db
 
+  vote-1:
+    build: ./vote
+    ports:
+      - "5001:80"
+    depends_on:
+      - redis
+      - db
+
   worker:
     build: ./worker
     depends_on:
